@@ -10,6 +10,7 @@ const router = express.Router(); //create the express router
 // route the requests
 router.post('/create', questionsController.createQuestion); //route the request to createQuestion action of questions_controller
 router.post('/:id/options/create', optionsController.createOption); //route the request to createOption action of optiond_controller
+router.get('/:id', questionsController.getQuestion); //route the request to getQuestion action of questions_controller
 
 // export the router
 module.exports = router;
