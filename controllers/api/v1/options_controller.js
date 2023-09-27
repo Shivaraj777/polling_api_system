@@ -57,3 +57,39 @@ module.exports.createOption = async function(req, res){
         });
     }
 }
+
+// action to add vote to an option
+module.exports.addVote = async function(req, res){
+    try{
+        // find the option to vote
+        const option = await Option.findById(req.params.id);
+
+        // if option exists
+        if(option){
+            // increment the vote
+            option.votes++;
+            option.save();
+
+            console.log(`Vote added for option: ${option._id}`);
+            return res.status(200).json({
+                message: `Vote added for option: ${option._id}`,
+                success: true,
+                data: {
+                    option
+                }
+            });
+        }else{
+            console.log(`Option ${option._id} does not exist`);
+            return res.status(404).json({
+                message: `Option ${option._id} does not exist`,
+                success: false,
+            });
+        }
+    }catch(err){
+        console.log(`Error: ${err}`);
+        return res.status(500).json({
+            message: 'Internal server error',
+            success: false,
+        });
+    }
+}
