@@ -27,7 +27,7 @@ module.exports.createOption = async function(req, res){
                 value: req.body.value,
                 question: question._id
             });
-            option.link_to_vote = `${baseURL}/options/${option._id}/add_vote`;
+            option.link_to_vote = `${baseURL}/api/v1/options/${option._id}/add_vote`;
             option.save();
 
             // add the option to the question
