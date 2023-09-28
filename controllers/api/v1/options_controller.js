@@ -93,3 +93,36 @@ module.exports.addVote = async function(req, res){
         });
     }
 }
+
+// action to delete an option
+module.exports.deleteOption = async function(req, res){
+    try{
+        // find the option
+        const option = await Option.findById(req.params.id);
+
+        // if option exists
+        if(option){
+            // remove the option from question and delete it
+            await Question.findByIdAndUpdate(option.question, {$pull: {options: option._id}});
+            await Option.findByIdAndDelete(req.params.id);
+
+            console.log(`Option ${req.params.id} deleted successfully`);
+            return res.status(200).json({
+                message: `Option ${req.params.id} deleted successfully`,
+                success: true
+            });
+        }else{
+            console.log(`Option ${req.params.id} does not exist`);
+            return res.status(404).json({
+                message: `Option ${req.params.id} does not exist`,
+                success: false
+            });
+        }
+    }catch(err){
+        console.log(`Error: ${err}`);
+        return res.status(500).json({
+            message: 'Internal server error',
+            success: false
+        });
+    }
+}
