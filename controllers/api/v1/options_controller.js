@@ -102,15 +102,24 @@ module.exports.deleteOption = async function(req, res){
 
         // if option exists
         if(option){
-            // remove the option from question and delete it
-            await Question.findByIdAndUpdate(option.question, {$pull: {options: option._id}});
-            await Option.findByIdAndDelete(req.params.id);
+            // delete if option does not contain votes
+            if(option.votes === 0){
+                // remove the option from question and delete it
+                await Question.findByIdAndUpdate(option.question, {$pull: {options: option._id}});
+                await Option.findByIdAndDelete(req.params.id);
 
-            console.log(`Option ${req.params.id} deleted successfully`);
-            return res.status(200).json({
-                message: `Option ${req.params.id} deleted successfully`,
-                success: true
-            });
+                console.log(`Option ${req.params.id} deleted successfully`);
+                return res.status(200).json({
+                    message: `Option ${req.params.id} deleted successfully`,
+                    success: true
+                });
+            }else{
+                console.log(`Option ${req.params.id} contains votes, hence cannot be deleted`);
+                return res.status(400).json({
+                    message: `Option ${req.params.id} contains votes, hence cannot be deleted`,
+                    success: false
+                });
+            }
         }else{
             console.log(`Option ${req.params.id} does not exist`);
             return res.status(404).json({
