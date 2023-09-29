@@ -80,9 +80,9 @@ module.exports.addVote = async function(req, res){
                 }
             });
         }else{
-            console.log(`Option ${option._id} does not exist`);
+            console.log(`Option ${req.params.id} does not exist`);
             return res.status(404).json({
-                message: `Option ${option._id} does not exist`,
+                message: `Option ${req.params.id} does not exist`,
                 success: false,
             });
         }
