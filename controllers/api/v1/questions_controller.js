@@ -2,6 +2,7 @@
 
 // imports
 const Question = require('../../../models/question'); //import the question model
+const Option = require('../../../models/option'); //import the option model
 
 // action to create a question
 module.exports.createQuestion = async function(req, res){
@@ -73,6 +74,58 @@ module.exports.getQuestion = async function(req, res){
         return res.status(500).json({
             message: 'Internal server error',
             success: false,
+        }); 
+    }
+}
+
+// action to delete a question
+module.exports.deleteQuestion = async function(req, res){
+    try{
+        // find the question
+        const question = await Question.findById(req.params.id).populate({path: 'options', select: '_id value votes'});
+
+        // if question exists
+        if(question){
+            // check if question's options have votes
+            const options = question.options;
+            let canBeDeleted = true;
+            options.forEach(option => {
+                if(option.votes > 0){
+                    canBeDeleted = false;
+                    return;
+                }
+            });
+
+            // if question can be deleted
+            if(canBeDeleted){
+                // delete the options and question
+                await Option.deleteMany({question: question._id});
+                await Question.findByIdAndDelete(question._id);
+
+                console.log(`Question ${req.params.id} deleted successfully`);
+                return res.status(200).json({
+                    message: `Question ${req.params.id} deleted successfully`,
+                    success: true
+                });
+            }else{
+                console.log(`Question ${req.params.id} contains options which have been voted, hence it cannot be deleted`);
+                return res.status(400).json({
+                    message: `Question ${req.params.id} contains options which have been voted, hence it cannot be deleted`,
+                    success: false
+                });
+            }
+        }else{
+            console.log(`Question ${req.params.id} does not exists`);
+            return res.status(404).json({
+                message: `Question ${req.params.id} does not exists`,
+                success: false
+            }); 
+        }
+    }catch(err){
+        console.log(`Error: ${err}`);
+        return res.status(500).json({
+            message: `Internal sserver error`,
+            success: false
         }); 
     }
 }
