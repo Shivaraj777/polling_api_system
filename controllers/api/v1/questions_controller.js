@@ -73,9 +73,9 @@ module.exports.getQuestion = async function(req, res){
                 }
             });
         }else{
-            console.log(`Question ${question._id} does not exists`);
+            console.log(`Question ${req.params.id} does not exists`);
             return res.status(404).json({
-                message: `Question ${question._id} does not exists`,
+                message: `Question ${req.params.id} does not exists`,
                 success: false,
             }); 
         }
