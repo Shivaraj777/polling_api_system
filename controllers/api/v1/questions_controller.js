@@ -3,10 +3,20 @@
 // imports
 const Question = require('../../../models/question'); //import the question model
 const Option = require('../../../models/option'); //import the option model
+const utils = require('../../../utils/index');
 
 // action to create a question
 module.exports.createQuestion = async function(req, res){
     try{
+        // check if question title is null
+        if(!req.body.title || !utils.containsNonSpaceCharacters(req.body.title)){
+            console.log('Question title cannot be null');
+            return res.status(400).json({
+                message: 'Question title cannot be null',
+                success: false
+            });
+        }
+
         // check if question already exists
         let question = await Question.findOne({title: req.body.title});
 
