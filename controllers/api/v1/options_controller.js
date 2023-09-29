@@ -3,12 +3,13 @@
 // imports
 const Question = require('../../../models/question');
 const Option = require('../../../models/option');
+const utils = require('../../../utils/index');
 
 // action to create an option
 module.exports.createOption = async function(req, res){
     try{
         // check questionId and option value are null
-        if(!req.params.id || !req.body.value){
+        if(!req.params.id || !req.body.value || !utils.containsNonSpaceCharacters(req.body.value)){
             console.log('QuestionId/Option value is null');
             return res.status(400).json({
                 message: 'QuestionId/Option value is null',
