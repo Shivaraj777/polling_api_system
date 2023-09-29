@@ -4,6 +4,7 @@
 const Question = require('../../../models/question');
 const Option = require('../../../models/option');
 const utils = require('../../../utils/index');
+const env = require('../../../config/environment');
 
 // action to create an option
 module.exports.createOption = async function(req, res){
@@ -23,7 +24,7 @@ module.exports.createOption = async function(req, res){
         // if question exists
         if(question){
             // create option
-            const baseURL = 'http://localhost:8000'
+            const baseURL = env.API_base_URL;
             const option = await Option.create({
                 value: req.body.value,
                 question: question._id

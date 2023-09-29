@@ -2,9 +2,10 @@
 
 // imports
 const mongoose = require('mongoose');
+const env = require('./environment');
 
 // connect to the database
-mongoose.connect('mongodb://127.0.0.1/polling_api');
+mongoose.connect(env.mongo_connect_URL);
 
 // establish connection to the database
 const db = mongoose.connection;

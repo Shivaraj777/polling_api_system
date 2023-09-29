@@ -3,7 +3,7 @@ const express = require('express'); //import the express module
 const db = require('./config/mongoose'); //import the mongoose module
 
 const app = express(); //create the express app
-const port = 8000; //define the port
+const port = process.env.port || 8000; //define the port
 
 // middleware to parse form data
 app.use(express.json());
