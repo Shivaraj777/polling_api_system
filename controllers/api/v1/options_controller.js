@@ -1,10 +1,10 @@
 // Description: This file contains the actions related to options
 
 // imports
-const Question = require('../../../models/question');
-const Option = require('../../../models/option');
-const utils = require('../../../utils/index');
-const env = require('../../../config/environment');
+const Question = require('../../../models/question'); //import the question model
+const Option = require('../../../models/option'); //import the option model
+const utils = require('../../../utils/index'); //import the utility functions
+const env = require('../../../config/environment'); //import the environment config
 
 // action to create an option
 module.exports.createOption = async function(req, res){
@@ -36,6 +36,7 @@ module.exports.createOption = async function(req, res){
             question.options.push(option._id);
             question.save();
 
+            // send success response
             console.log('Option created successfully');
             return res.status(200).json({
                 message: `Option for ${question._id} added successfully`,
@@ -44,14 +45,14 @@ module.exports.createOption = async function(req, res){
                     option
                 }
             });
-        }else{
+        }else{ //not found response
             console.log('Question does not exist, Please enter a valid questionId');
             return res.status(404).json({
                 message: `Question with ${req.params.id} does not exist, Please enter a valid questionId`,
                 success: false
             });
         }
-    }catch(err){
+    }catch(err){ //unhandled error response
         console.log(`Error: ${err}`);
         return res.status(500).json({
             message: `Internal server error`,
@@ -72,6 +73,7 @@ module.exports.addVote = async function(req, res){
             option.votes++;
             option.save();
 
+            // send the success response
             console.log(`Vote added for option: ${option._id}`);
             return res.status(200).json({
                 message: `Vote added for option: ${option._id}`,
@@ -110,6 +112,7 @@ module.exports.deleteOption = async function(req, res){
                 await Question.findByIdAndUpdate(option.question, {$pull: {options: option._id}});
                 await Option.findByIdAndDelete(req.params.id);
 
+                // send the success response
                 console.log(`Option ${req.params.id} deleted successfully`);
                 return res.status(200).json({
                     message: `Option ${req.params.id} deleted successfully`,

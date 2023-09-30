@@ -3,7 +3,7 @@
 // imports
 const Question = require('../../../models/question'); //import the question model
 const Option = require('../../../models/option'); //import the option model
-const utils = require('../../../utils/index');
+const utils = require('../../../utils/index'); //import the utility functions
 
 // action to create a question
 module.exports.createQuestion = async function(req, res){
@@ -26,6 +26,7 @@ module.exports.createQuestion = async function(req, res){
                 title: req.body.title
             });
 
+            // send the success response
             console.log('Question created successfully');
             return res.status(200).json({
                 message: 'Question created successfully',
@@ -34,7 +35,7 @@ module.exports.createQuestion = async function(req, res){
                     question
                 }
             });
-        }else{
+        }else{ //not found response
             console.log('Question already exists');
             return res.status(400).json({
                 message: 'Question already exists, please enter a different question',
@@ -44,7 +45,7 @@ module.exports.createQuestion = async function(req, res){
                 }
             });
         }
-    }catch(err){
+    }catch(err){ //unhandled error response
         console.log(`Error: ${err}`);
         return res.status(500).json({
             message: 'Internal server error',
@@ -64,6 +65,7 @@ module.exports.getQuestion = async function(req, res){
             // enable question record to access it's options data
             await question.populate({path: 'options', select: '_id value votes link_to_vote'});
 
+            // send the success response
             console.log(`Question ${question._id} fetched successfully`);
             return res.status(200).json({
                 message: `Question ${question._id} fetched successfully`,
@@ -112,6 +114,7 @@ module.exports.deleteQuestion = async function(req, res){
                 await Option.deleteMany({question: question._id});
                 await Question.findByIdAndDelete(question._id);
 
+                // send the success response
                 console.log(`Question ${req.params.id} deleted successfully`);
                 return res.status(200).json({
                     message: `Question ${req.params.id} deleted successfully`,
